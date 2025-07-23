@@ -26,14 +26,11 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
           <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
           <Route path="/shop" element={<PrivateRoute><Shop /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/create-event" element={<PrivateRoute><CreateEvent /></PrivateRoute>} />
           <Route path="/events/:id" element={<PrivateRoute><EventDetail /></PrivateRoute>} />
-
-          {/* Not found */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
