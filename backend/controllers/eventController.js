@@ -5,6 +5,37 @@ function isValidDate(dateString) {
   return !isNaN(Date.parse(dateString));
 }
 
+// в файле backend/controllers/eventController.js
+
+// Выйти из события
+exports.leaveEvent = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Проверяем, что пользователь уже в списке участников
+    const exists = await pool.query(
+      'SELECT * FROM event_participants WHERE event_id = $1 AND user_id = $2',
+      [id, userId]
+    );
+    if (!exists.rows.length) {
+      return res.status(400).json({ message: 'Вы не участвуете в этом событии' });
+    }
+
+    // Удаляем запись о его участии
+    await pool.query(
+      'DELETE FROM event_participants WHERE event_id = $1 AND user_id = $2',
+      [id, userId]
+    );
+
+    res.json({ message: 'Вы успешно вышли из события' });
+  } catch (e) {
+    console.error('Leave event error:', e);
+    res.status(500).json({ message: 'Ошибка сервера' });
+  }
+};
+
+
 // Создать событие (автор сразу участник)
 exports.createEvent = async (req, res) => {
   try {
@@ -141,6 +172,6 @@ module.exports = {
   getEvents: exports.getEvents,
   getEventById: exports.getEventById,
   deleteEvent: exports.deleteEvent,
-  joinEvent: exports.joinEvent
-  // другие функции при необходимости
+  joinEvent: exports.joinEvent,
+  leaveEvent:   exports.leaveEvent,
 };
