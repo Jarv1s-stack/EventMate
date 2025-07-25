@@ -8,4 +8,5 @@ router.get('/:id/points', authenticateToken, userController.getPoints);
 
 router.get('/me', authenticateToken, userController.getMyProfile);
 
+
 module.exports = router;
