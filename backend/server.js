@@ -18,7 +18,7 @@ app.use(cors({
 }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+ 
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/messages', messageRoutes);
