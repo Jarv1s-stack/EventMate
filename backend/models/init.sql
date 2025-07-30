@@ -1,0 +1,54 @@
+-- USERS: пользователи
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(200) NOT NULL,
+  points INTEGER DEFAULT 0 NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+ALTER TABLE users ADD COLUMN avatar TEXT;
+
+-- EVENTS: события
+CREATE TABLE IF NOT EXISTS events (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  date TIMESTAMP NOT NULL, -- дата и время начала
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- EVENT_PARTICIPANTS: участники событий
+CREATE TABLE IF NOT EXISTS event_participants (
+  id SERIAL PRIMARY KEY,
+  event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- MESSAGES: чат для событий
+CREATE TABLE IF NOT EXISTS messages (
+  id SERIAL PRIMARY KEY,
+  sender_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+  content TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- SHOP: магазинные товары
+CREATE TABLE IF NOT EXISTS shop (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  image_url TEXT,
+  description TEXT,
+  price INTEGER NOT NULL DEFAULT 0
+);
+
+-- PURCHASES: история покупок
+CREATE TABLE IF NOT EXISTS purchases (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  shop_item_id INTEGER REFERENCES shop(id) ON DELETE CASCADE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
